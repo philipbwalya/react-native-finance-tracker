@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 interface Props {
   children: React.ReactNode;
 }
-
+// safe area component
 const SafeScreen = ({ children }: Props) => {
   const insets = useSafeAreaInsets();
   return (
