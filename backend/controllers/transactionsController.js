@@ -2,6 +2,7 @@ import { sql } from "../config/db.js";
 
 export async function getTransactionsById(req, res) {
   try {
+    // get user id from clerk
     const { user_id } = req.params;
     const transactions =
       await sql`SELECT * FROM transactions WHERE user_id = ${user_id}`;

@@ -10,11 +10,11 @@ const app = express();
 // middleware
 app.use(express.json());
 app.use(rateLimiter);
-
+// routes middleware
 app.use("/api/transactions", transactionsRoute);
 
 const PORT = process.env.PORT || 3000;
-
+// initiate database
 initDB().then(() => {
   app.listen(3000, () => {
     console.log(`Server is running on port ${PORT}`);
