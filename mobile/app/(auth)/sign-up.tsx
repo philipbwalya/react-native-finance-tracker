@@ -1,7 +1,14 @@
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -80,31 +87,52 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View>
-      <>
-        <Text>Sign up</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
-        </TouchableOpacity>
-        <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
-          <Text>Already have an account?</Text>
-          <Link href="/sign-in">
-            <Text>Sign in</Text>
-          </Link>
-        </View>
-      </>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <>
+          <Text>Sign up</Text>
+          <TextInput
+            autoCapitalize="none"
+            value={emailAddress}
+            placeholder="Enter email"
+            onChangeText={(email) => setEmailAddress(email)}
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderWidth: 1,
+              width: "80%",
+              marginBottom: 20,
+              paddingHorizontal: 8,
+            }}
+          />
+          <TextInput
+            value={password}
+            placeholder="Enter password"
+            secureTextEntry={true}
+            onChangeText={(password) => setPassword(password)}
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderWidth: 1,
+              width: "80%",
+              marginBottom: 20,
+              paddingHorizontal: 8,
+            }}
+          />
+          <TouchableOpacity onPress={onSignUpPress}>
+            <Text>Continue</Text>
+          </TouchableOpacity>
+          <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
+            <Text>Already have an account?</Text>
+            <Link href="/sign-in">
+              <Text>Sign in</Text>
+            </Link>
+          </View>
+        </>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
