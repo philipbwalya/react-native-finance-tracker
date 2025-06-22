@@ -1,10 +1,19 @@
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 
+interface Transaction {
+  id: string;
+  amount: number;
+  category: string;
+  date: string;
+  description: string;
+  type: string;
+}
+
 
 const API_URL = "http://localhost:3000/api/"
 export const useTransactions = (userId: string) => {
-  const [transactions, setTransactions] = useState<string[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const[summary, setSummary] = useState({
     balance: 0,
     income: 0,
