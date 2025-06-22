@@ -1,7 +1,11 @@
+import { styles } from "@/assets/styles/auth.styles";
+import { COLORS } from "@/constants/colors";
 import { useSignUp } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import * as React from "react";
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -18,10 +22,12 @@ export default function SignUpScreen() {
   const [password, setPassword] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
+  const [error, setError] = React.useState("");
 
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
     if (!isLoaded) return;
+    if (!emailAddress || !password) return setError("All Fields Are Required");
 
     // Start sign-up process using email and password provided
     try {
@@ -40,6 +46,8 @@ export default function SignUpScreen() {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
       console.error(JSON.stringify(err, null, 2));
+      const errorMessage = (err as any)?.errors?.[0]?.longMessage;
+      setError(errorMessage || "Something went wrong");
     }
   };
 
@@ -61,28 +69,41 @@ export default function SignUpScreen() {
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2));
+        // console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      // console.error(JSON.stringify(err, null, 2));
+      const errorMessage = (err as any)?.errors?.[0]?.longMessage;
+      setError(errorMessage || "Something went wrong");
     }
   };
 
   if (pendingVerification) {
     return (
-      <>
-        <Text>Verify your email</Text>
+      <View style={styles.verificationContainer}>
+        <Text style={styles.verificationTitle}>Verify your email</Text>
+        {error && (
+          <View style={styles.errorBox}>
+            <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={() => setError("")}>
+              <Ionicons name="close" size={20} color={COLORS.textLight} />
+            </TouchableOpacity>
+          </View>
+        )}
         <TextInput
           value={code}
           placeholder="Enter your verification code"
+          keyboardType="numeric"
           onChangeText={(code) => setCode(code)}
+          style={[styles.verificationInput, error && styles.errorInput]}
         />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
+        <TouchableOpacity onPress={onVerifyPress} style={[styles.button]}>
+          <Text style={[styles.buttonText]}>Verify</Text>
         </TouchableOpacity>
-      </>
+      </View>
     );
   }
 
@@ -92,46 +113,45 @@ export default function SignUpScreen() {
       style={{ flex: 1 }}
     >
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <>
-          <Text>Sign up</Text>
+        <View style={styles.container}>
+          <Image
+            source={require("@/assets/images/revenue-i1.png")}
+            style={styles.illustration}
+          />
+          <Text style={styles.title}>Sign up</Text>
           <TextInput
+            style={styles.input}
             autoCapitalize="none"
             value={emailAddress}
             placeholder="Enter email"
             onChangeText={(email) => setEmailAddress(email)}
-            style={{
-              height: 40,
-              borderColor: "gray",
-              borderWidth: 1,
-              width: "80%",
-              marginBottom: 20,
-              paddingHorizontal: 8,
-            }}
           />
           <TextInput
             value={password}
             placeholder="Enter password"
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
-            style={{
-              height: 40,
-              borderColor: "gray",
-              borderWidth: 1,
-              width: "80%",
-              marginBottom: 20,
-              paddingHorizontal: 8,
-            }}
+            style={styles.input}
           />
-          <TouchableOpacity onPress={onSignUpPress}>
-            <Text>Continue</Text>
+          {error && (
+            <View style={styles.errorBox}>
+              <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity onPress={() => setError("")}>
+                <Ionicons name="close" size={20} color={COLORS.textLight} />
+              </TouchableOpacity>
+            </View>
+          )}
+          <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
+            <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
-          <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
-            <Text>Already have an account?</Text>
-            <Link href="/sign-in">
+          <View style={styles.footerContainer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <Link href="/sign-in" style={styles.linkText}>
               <Text>Sign in</Text>
             </Link>
           </View>
-        </>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
