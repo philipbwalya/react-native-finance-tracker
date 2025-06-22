@@ -10,11 +10,17 @@ interface Transaction {
   type: string;
 }
 
+interface Summary {
+  balance: number;
+  income: number;
+  expenses: number;
+}
+
 
 const API_URL = "http://localhost:3000/api/"
 export const useTransactions = (userId: string) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const[summary, setSummary] = useState({
+  const[summary, setSummary] = useState<Summary>({
     balance: 0,
     income: 0,
     expenses: 0,
